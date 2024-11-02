@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片转换器</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <h1 style="text-align: center; margin: 0 0 2rem; font-size: 1.8rem; font-weight: 500; color: var(--text-color);">图片转换器</h1>
+
+        <button id="toggleUpload" class="action-btn" style="display: none;">
+            <span class="material-icons">add_photo_alternate</span>
+            上传新图片
+        </button>
+
+        <div id="uploadSection" class="upload-section">
+            <div class="upload-area">
+                <input type="file" id="imageInput" accept="image/*">
+                <label for="imageInput" class="upload-label">
+                    <div class="upload-icon">
+                        <span class="material-icons">cloud_upload</span>
+                    </div>
+                    <div class="upload-text">
+                        <h3>拖放图片到这里</h3>
+                        <p>或者点击选择文件</p>
+                        <div class="supported-formats">
+                            支持的格式: PNG, JPG, WEBP, GIF
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="content-area" id="contentArea" style="display: none;">
+            <!-- 文件信息面板 -->
+            <div class="info-panel">
+                <!-- 原始图片信息 -->
+                <div class="file-info">
+                    <div class="panel-subtitle">
+                        <span class="material-icons">cloud_upload</span>
+                        上传图片
+                    </div>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <span class="material-icons">description</span>
+                            <span>文件名: <strong id="fileName">-</strong></span>
+                        </div>
+                        <div class="info-divider"></div>
+                        <div class="info-item">
+                            <span class="material-icons">photo_size_select_large</span>
+                            <span>尺寸: <strong id="originalSize">-</strong></span>
+                        </div>
+                        <div class="info-divider"></div>
+                        <div class="info-item">
+                            <span class="material-icons">image</span>
+                            <span>格式: <strong id="fileFormat">-</strong></span>
+                        </div>
+                        <div class="info-divider"></div>
+                        <div class="info-item">
+                            <span class="material-icons">storage</span>
+                            <span>大小: <strong id="fileSize">-</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 新图片信息 -->
+                <div class="file-info new-info" style="display: none;">
+                    <div class="panel-subtitle">
+                        <span class="material-icons">auto_awesome</span>
+                        处理后图片
+                    </div>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <span class="material-icons">photo_size_select_large</span>
+                            <span>尺寸: <strong id="newSize">-</strong></span>
+                        </div>
+                        <div class="info-divider"></div>
+                        <div class="info-item">
+                            <span class="material-icons">image</span>
+                            <span>格式: <strong id="newFormat">-</strong></span>
+                        </div>
+                        <div class="info-divider"></div>
+                        <div class="info-item">
+                            <span class="material-icons">storage</span>
+                            <span>大小: <strong id="newFileSize">-</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 功能按钮组 -->
+                <div class="action-buttons">
+                    <button id="previewBtn" class="action-btn">
+                        <span class="material-icons">visibility</span>
+                        预览图片
+                    </button>
+                    <button id="convertBtn" class="action-btn">
+                        <span class="material-icons">transform</span>
+                        格式转换
+                    </button>
+                    <button id="resizeBtn" class="action-btn">
+                        <span class="material-icons">photo_size_select_large</span>
+                        调整大小
+                    </button>
+                    <button id="downloadBtn" class="action-btn download-btn">
+                        <span class="material-icons">download</span>
+                        下载图片
+                    </button>
+                </div>
+            </div>
+
+            <!-- 预览面板 -->
+            <div id="previewPanel" class="panel" style="display: none;">
+                <div class="panel-header">
+                    <h3>图片预览</h3>
+                    <button class="close-btn">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                <div class="preview-container">
+                    <img id="preview" alt="预览">
+                </div>
+            </div>
+
+            <!-- 调整大小面板 -->
+            <div id="resizePanel" class="panel" style="display: none;">
+                <div class="panel-header">
+                    <h3><span class="material-icons">photo_size_select_large</span> 调整大小</h3>
+                    <button class="close-btn">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div class="size-controls">
+                        <div class="input-group">
+                            <label>
+                                <span>宽度 (px)</span>
+                                <input type="number" id="widthInput" placeholder="宽度">
+                            </label>
+                            <label>
+                                <span>高度 (px)</span>
+                                <input type="number" id="heightInput" placeholder="高度">
+                            </label>
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="maintainRatio" checked>
+                            <span>保持比例</span>
+                        </label>
+                        <div class="panel-buttons">
+                            <button id="applySize" class="primary-btn">
+                                <span class="material-icons">done</span>
+                                调整
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 格式转换面板 -->
+            <div id="convertPanel" class="panel" style="display: none;">
+                <div class="panel-header">
+                    <h3><span class="material-icons">transform</span> 格式转换</h3>
+                    <button class="close-btn">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div class="format-controls">
+                        <div class="format-selection">
+                            <label>
+                                <span>输出格式</span>
+                                <select id="formatSelect">
+                                    <option value="png">PNG</option>
+                                    <option value="jpeg">JPEG</option>
+                                    <option value="webp">WebP</option>
+                                </select>
+                            </label>
+                            <div class="quality-tip"></div>
+                        </div>
+
+                        <div class="quality-control">
+                            <label>
+                                <span>质量调整</span>
+                                <div class="quality-slider">
+                                    <input type="range" id="qualitySlider" min="1" max="100" value="90">
+                                    <span id="qualityValue">90%</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="panel-buttons">
+                        <button id="convertImageBtn" class="primary-btn">
+                            <span class="material-icons">autorenew</span>
+                            转换
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <span class="version">v1.0.0</span>
+            <span class="divider">|</span>
+            <span>Created by <a href="https://hatcherchen.pages.dev" target="_blank" rel="noopener noreferrer">Hatcher Chen</a></span>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
